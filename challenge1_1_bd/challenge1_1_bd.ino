@@ -143,7 +143,7 @@ if (BOT == 1) {
 
 
   
-  static RB rb = {0, 0 , false};
+  static RB rb;
 
   if (millis() > lastBombSet + 10) {
     lastBombSet = millis();
@@ -303,6 +303,7 @@ if (BOT == 1) {
     case 6:
         Serial.println("State 6");
         // CHANGE THIS TO DETECT YELLOW AT THE END OF THE RED LINE
+        bumperState = 0;
         collisionArm(true);
         if (bumperState != 0) {
             d.stop();

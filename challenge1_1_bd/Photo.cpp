@@ -72,7 +72,7 @@ void Photo::ledOff() {
 
 
 RB Photo::getRB(RB rb){
-
+  rb.valid = false;
 
   static byte state = 0;
 

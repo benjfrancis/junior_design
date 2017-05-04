@@ -72,7 +72,7 @@ void Photo::ledOff() {
 
 
 RB Photo::getRB(RB rb){
-
+  rb.valid = false;
 
   static byte state = 0;
 
@@ -114,8 +114,8 @@ RB Photo::getRB(RB rb){
       toPrint = "B:  " + String(B);
       //Serial.println(toPrint);
 
-      Serial.println();
-      Serial.println();
+      //Serial.println();
+      //Serial.println();
 
       
       //toPrint = "AMB:  " + String(AMB);

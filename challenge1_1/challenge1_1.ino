@@ -143,7 +143,7 @@ if (BOT == 1) {
 
 
   
-  static RB rb = {0, 0 , false};
+  static RB rb;
 
   if (millis() > lastBombSet + 10) {
     lastBombSet = millis();
@@ -204,7 +204,7 @@ if (BOT == 1) {
         }
         break;
     case 3:
-      Serial.println("State 3");
+      //Serial.println("State 3");
       displayState(state);
       collisionArm(true);
       
@@ -246,11 +246,15 @@ if (BOT == 1) {
           }
       } else if (p.isBlack(rb)) {
           d.leftArch(0.6, 0.75);
-          //Serial.println("RIGHT");
+          Serial.println(rb.r);
+          Serial.println(rb.b);
+          Serial.println("LEFT");
           rb.valid = false;
       } else if (!p.isBlack(rb)) {
           d.rightArch(0.6, 0.75);
-          //Serial.println("LEFT");
+          Serial.println(rb.r);
+          Serial.println(rb.b);
+          Serial.println("RIGHT");
           rb.valid = false;
       } 
       
@@ -303,6 +307,7 @@ if (BOT == 1) {
     case 6:
         Serial.println("State 6");
         // CHANGE THIS TO DETECT YELLOW AT THE END OF THE RED LINE
+        bumperState = 0;
         collisionArm(true);
         if (bumperState != 0) {
             d.stop();
