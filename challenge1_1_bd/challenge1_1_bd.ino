@@ -84,8 +84,8 @@ Comms c;
 Photo p;
 Drive d;
 
-//String BOT_NAME = "DD";
-String BOT_NAME = "PL";
+String BOT_NAME = "DD";
+//String BOT_NAME = "PL";
 
 
 void setup() {
@@ -364,6 +364,7 @@ if (BOT == 1) {
         rb = p.getRB(rb);
     case 9:
         Serial.println("State 8");
+        d.stop();
         ledFlash();
         state = 99;
         break;
@@ -623,6 +624,7 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
         Serial.println("State 8");
         ledFlash();
         state = 99;
+        d.stop();
         break;
 
     case 10:
