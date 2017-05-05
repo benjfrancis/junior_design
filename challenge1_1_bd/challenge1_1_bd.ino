@@ -29,7 +29,7 @@ bool mineFound = false;
 
 // OTHER
 
-const int SWITCH = 8;
+const int SWITCH = 46;
 
 
 
@@ -89,7 +89,7 @@ Drive d;
 void setup() {
   Serial.begin(9600);
 
-  pinMode(SWITCH, OUTPUT);
+  pinMode(SWITCH, INPUT);
   pinMode(RED_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
   pinMode(YELLOW_LED, OUTPUT);
@@ -133,7 +133,7 @@ void setup() {
  
 // BOT 1 IS RED LINE
 // BOT 2 IS BLUE LINE
-const int BOT = 1;
+const int BOT = 2;
  
 void loop() {
 if (BOT == 1) {
@@ -199,7 +199,7 @@ if (BOT == 1) {
           delay(2700);
           d.rightInPlace(0.5);
           delay(450);
-          
+          bumperState = 0;
           state = 3;
         }
         break;
@@ -207,6 +207,7 @@ if (BOT == 1) {
       Serial.println("State 3");
       displayState(state);
       collisionArm(true);
+      
       
       rb = p.getRB(rb);
 
@@ -383,10 +384,251 @@ if (BOT == 1) {
 
 
 
-if (BOT == 2) {
+if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and we are testing :)
+
+  static byte state = 0;
+
+
+  
+  static RB rb;
+
+  if (millis() > lastBombSet + 10) {
+    lastBombSet = millis();
+    if (hallState == 1) {
+        digitalWrite(BOMB_LED, HIGH);
+    } else {
+        digitalWrite(BOMB_LED, LOW);
+    }
+  }
+
+  if (digitalRead(SWITCH) == LOW) {
+      state = 0;
+      d.stop();
+      p.ledOff();
+      hallArm(false);
+      hallArmState = false;
+      hallState = 0;
+      
+      collisionArm(false);
+      collisionArmState = false;
+      bumperState = 0;
+  }
+
+  switch (state) {
+    case 0:
+      displayState(state);
+      Serial.println("State 0");
+      //delay(5000);
+      if (digitalRead(SWITCH) == HIGH) {
+          delay(2000);
+          state = 1;
+      }
+      break;
+    case 1: 
+      Serial.println("State 1");
+      displayState(state);
+      //////////////////turn yellow LED on
+      d.leftInPlace(0.5);
+      delay(220);
+      d.stop();
+      state = 2;
+        break; 
+    case 2: 
+        Serial.println("State 2");
+        
+        displayState(state);
+        collisionArm(true);
+        d.forward(0.75);
+        if (bumperState != 0) {
+          bumperState = 0;
+          collisionArm(false);
+          d.backward(0.75);
+          delay(2200);
+          d.leftInPlace(0.5);
+          delay(450);
+          
+          state = 3;
+        }
+        break;
+    case 3:
+      //Serial.println("State 3");
+      displayState(state);
+      collisionArm(true);
+      bumperState = 0;
+      
+      rb = p.getRB(rb);
+
+      if (!mineFound) {
+          hallArm(true);  
+      }
+      
+      if (bumperState != 0) {
+          collisionArm(false);
+          bumperState = 0;
+          p.ledOff();
+          
+          state = 4; //
+      } else if (!mineFound && hallState != 0) { 
+          hallState = 0;
+          hallArm(false);
+          digitalWrite(BOMB_LED, HIGH);
+          
+          //////////////// flash blue LED
+          d.stop();
+          c.transmitDelay(400);
+          d.rightInPlace(0.5);
+          delay(750);
+          d.stop();
+          delay(1000);
+          while (c.receive() != 4) {
+            //Serial.println("Waiting for 200ms message...");
+          }
+          mineFound = true;
+          d.leftInPlace(0.5);
+          delay(750);
+          d.stop();
+          delay(500);
+          rb.valid = false;
+          while(!rb.valid) {
+            rb = p.getRB(rb);
+          }
+      } else if (p.isBlack(rb)) {
+          d.leftArch(0.6, 0.75);
+          //Serial.println("RIGHT");
+          rb.valid = false;
+      } else if (!p.isBlack(rb)) {
+          d.rightArch(0.6, 0.75);
+          //Serial.println("LEFT");
+          rb.valid = false;
+      } 
+      
+
+
+      
+
+      
+      break;
+
+
+      
+        
+        break;
+
+    case 4:
+        Serial.println("State 4");
+        displayState(state);
+        bumperState = 0;
+        d.stop();
+        d.backward(0.75);
+        delay(250);
+        d.rightInPlace(0.4);
+        delay(1000); // SHOULD BE 180 TURN
+        d.rightInPlace(0.4);
+        rb.valid = false;
+        while(!rb.valid) {
+          rb = p.getRB(rb); 
+        }
+        while(p.isBlack(rb)) {
+          rb = p.getRB(rb);
+        }
+        d.stop();
+        delay(500);
+        c.transmitDelay(320);
+        state = 5; // 6;
+        
+        break;
+
+    case 5:
+        Serial.println("State 5");
+        displayState(state);
+        //while (c.receive() != 4) {
+          //Serial.println("Waiting for 500ms from bot 2");
+        //}
+        rb.valid = false;
+        state = 6; // 7;
+        break;
+
+    case 6:
+        Serial.println("State 6");
+        // CHANGE THIS TO DETECT YELLOW AT THE END OF THE RED LINE
+        bumperState = 0;
+        collisionArm(true);
+        if (bumperState != 0) {
+            d.stop();
+            state = 99;
+        } else if (rb.valid == false) {
+            rb = p.getRB(rb);
+        } else if (p.isBlack(rb)) {
+            d.leftArch(0.8, 0.75);
+            rb.valid = false;
+        } else if (p.getYB(rb) == 'b'){
+            d.rightArch(0.8, 0.75);
+            rb.valid = false;
+        } else {
+            d.stop();
+            rb.valid = false;
+            state = 7;
+        }
+        
+        break;
+
+    case 7: 
+        Serial.println("State 7");
+        d.rightInPlace(0.5);
+        delay(600);
+        d.forward(0.75);
+        delay(400);
+        d.stop();
+        state = 9;
+        
+        break;
+
+    case 9:
+        Serial.println("State 8");
+        ledFlash();
+        state = 99;
+        break;
+
+    case 10:
+        break;
+
+
+
+      
+    case 99: 
+      Serial.println("State STOP");
+      displayState(7);
+      d.stop();
+      break; 
+
+
+    case 100:
+      while(c.receive() != 4) {
+        //Serial.println("Waiting for 200ms Message...");
+      }
+        Serial.println("RECIEVED");
+        delay(5000);
+
+    case 101:
+      Serial.println("200");
+      c.transmitDelay(200);
+      delay(1000);
+      
+      break;
+
+    
+    default: 
+      
+      break;
+  }
+
+
+
   
 }
+  
 }
+
 
 
 

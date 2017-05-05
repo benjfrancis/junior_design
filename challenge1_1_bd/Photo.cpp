@@ -109,10 +109,10 @@ RB Photo::getRB(RB rb){
       avg_intensity = (R+B)/2;
       
       toPrint = "R:  " + String(R);
-      //Serial.println(toPrint);
+      Serial.println(toPrint);
       
       toPrint = "B:  " + String(B);
-      //Serial.println(toPrint);
+      Serial.println(toPrint);
 
       Serial.println();
       Serial.println();
@@ -189,7 +189,7 @@ char Photo::getColor(RB rb) {
 }
 
 char Photo::getYB(RB rb) {
-    if (rb.r / rb.b < 0.2) {
+    if (rb.b / rb.r > 6) {
         return 'b';  
     } else {
       return 'y';
