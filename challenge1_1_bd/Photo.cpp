@@ -189,7 +189,7 @@ char Photo::getColor(RB rb) {
 }
 
 char Photo::getYB(RB rb) {
-    if (rb.b / rb.r > 6) {
+    if (rb.b / rb.r > 5) { // WAS 6 @ 5/5 NOON
         return 'b';  
     } else {
       return 'y';

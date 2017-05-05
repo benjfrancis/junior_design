@@ -197,17 +197,18 @@ if (BOT == 1) {
       break;
     case 1: 
       Serial.println("State 1");
-      displayState(state);
-      //////////////////turn yellow LED on
+      //displayState(state);
+      displayState(2);
       d.rightInPlace(0.5);
       delay(220);
       d.stop();
       state = 2;
         break; 
     case 2: 
+        displayState(0);
         Serial.println("State 2");
         
-        displayState(state);
+        //displayState(state);
         collisionArm(true);
         d.forward(0.75);
         if (bumperState != 0) {
@@ -223,7 +224,7 @@ if (BOT == 1) {
         break;
     case 3:
       Serial.println("State 3");
-      displayState(state);
+      displayState(1);
       collisionArm(true);
       
       
@@ -237,15 +238,36 @@ if (BOT == 1) {
           collisionArm(false);
           bumperState = 0;
           p.ledOff();
+
+          // BLINK RED TWICE
+          displayState(0);
+          delay(100);
+          displayState(1);
+          delay(100);
+          displayState(0);
+          delay(100);
+          displayState(1);
+          delay(100);
           
           state = 4; //
       } else if (!mineFound && hallState != 0) { 
           hallState = 0;
           hallArm(false);
-          digitalWrite(BOMB_LED, HIGH);
           
-          //////////////// flash blue LED
+          digitalWrite(BOMB_LED, HIGH);
+
+          // flash blue
           d.stop();
+          displayState(5);
+          delay(100);
+          displayState(1);
+          delay(100);
+          displayState(5);
+          delay(100);
+          displayState(1);
+          delay(100);
+          
+          
           c.transmitDelay(200);
           d.rightInPlace(0.5);
           delay(650);
@@ -282,7 +304,7 @@ if (BOT == 1) {
 
     case 4:
         Serial.println("State 4");
-        displayState(state);
+        //displayState(state);
         bumperState = 0;
         d.stop();
         d.backward(0.75);
@@ -298,6 +320,7 @@ if (BOT == 1) {
           rb = p.getRB(rb);
         }
         d.stop();
+        displayState(2);
         delay(500);
         c.transmitDelay(320);
         state = 5; // 6;
@@ -306,12 +329,12 @@ if (BOT == 1) {
 
     case 5:
         Serial.println("State 5");
-        displayState(state);
+        //displayState(state);
         while (c.receive() != 5) {
           //Serial.println("Waiting for 500ms from bot 2");
         }
         rb.valid = false;
-        delay(5000);
+        delay(3000);
         state = 6; // 7;
         break;
 
@@ -344,27 +367,40 @@ if (BOT == 1) {
         Serial.println("State 7");
         d.leftInPlace(0.5);
         delay(800);
+        //delay(400);
         d.forward(0.75);
         delay(50);
         rb.valid = false;
+        d.stop();
         while (!rb.valid) {
           rb = p.getRB(rb);
         }
-        d.leftInPlace(0.5);
+        //d.leftInPlace(0.5);
         state = 8;
         
         break;
 
     case 8:
+    /////////
+        displayState(7);
+        ////////////
+        rb = p.getRB(rb);
         if (!p.isBlack(rb)) {
           
           d.stop();
           state = 9;
+        } else {
+          d.leftInPlace(0.5);
+          
         }
-        rb = p.getRB(rb);
+        
     case 9:
         Serial.println("State 8");
         d.stop();
+        d.leftInPlace(0.5);
+        delay(600);
+        d.stop();
+        c.transmitDelay(520);
         ledFlash();
         state = 99;
         break;
@@ -453,12 +489,13 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
       break;
     case 1: 
       Serial.println("State 1");
-      displayState(state);
+      //displayState(state);
       while(c.receive() != 3) {
         
       }
-      //////////////////turn yellow LED on
+      displayState(2);
       d.leftInPlace(0.5);
+      bumperState = 0;
       delay(220);
       d.stop();
       state = 2;
@@ -466,25 +503,24 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
     case 2: 
         Serial.println("State 2");
         
-        displayState(state);
+        displayState(0);
         collisionArm(true);
         d.forward(0.75);
         if (bumperState != 0) {
-          bumperState = 0;
+          
           collisionArm(false);
           d.backward(0.75);
           delay(2200);
           d.leftInPlace(0.5);
           delay(450);
-          
+          bumperState = 0;
           state = 3;
         }
         break;
     case 3:
       //Serial.println("State 3");
-      displayState(state);
+      displayState(4);
       collisionArm(true);
-      bumperState = 0;
       
       rb = p.getRB(rb);
 
@@ -496,6 +532,17 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
           collisionArm(false);
           bumperState = 0;
           p.ledOff();
+
+          // BLINK RED TWICE
+
+          displayState(0);
+          delay(100);
+          displayState(1);
+          delay(100);
+          displayState(0);
+          delay(100);
+          displayState(1);
+          delay(100);
           
           state = 4; //
           
@@ -505,9 +552,19 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
           hallState = 0;
           hallArm(false);
           digitalWrite(BOMB_LED, HIGH);
-          
-          //////////////// flash blue LED
+
           d.stop();
+          // flash blue
+          displayState(5);
+          delay(100);
+          displayState(1);
+          delay(100);
+          displayState(5);
+          delay(100);
+          displayState(1);
+          delay(100);
+          
+          
           c.transmitDelay(400);
           d.rightInPlace(0.5);
           delay(750);
@@ -541,7 +598,7 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
 
     case 4:
         Serial.println("State 4");
-        displayState(state);
+        displayState(2);
         bumperState = 0;
         d.stop();
         d.backward(0.75);
@@ -553,19 +610,23 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
         while(!rb.valid) {
           rb = p.getRB(rb); 
         }
+        rb.valid = false;
+        while(!rb.valid) {
+          rb = p.getRB(rb); 
+        }
         while(p.isBlack(rb)) {
           rb = p.getRB(rb);
         }
         d.stop();
         delay(500);
-        c.transmitDelay(500);
+        c.transmitDelay(520);
         state = 5; // 6;
         
         break;
 
     case 5:
         Serial.println("State 5");
-        displayState(state);
+        //displayState(state);
         //while (c.receive() != 4) {
           //Serial.println("Waiting for 500ms from bot 2");
         //}
@@ -601,26 +662,41 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
         
         Serial.println("State 7");
         d.rightInPlace(0.5);
-        delay(800);
+        //delay(800);
+        delay(820);
         d.forward(0.75);
-        delay(50);
+        delay(400);
         rb.valid = false;
+        d.stop();
         while (!rb.valid) {
           rb = p.getRB(rb);
         }
-        d.rightInPlace(0.5);
+        //d.rightInPlace(0.5);
         state = 8;
         
         break;
 
     case 8:
+    ///////////////
+        displayState(7);
+        /////////////////
+        rb = p.getRB(rb);
         if (!p.isBlack(rb)) {
+          
           d.stop();
           state = 9;
+        } else {
+          d.rightInPlace(0.5);
+          
         }
-        rb = p.getRB(rb);
 
     case 9:
+        d.rightInPlace(0.5);
+        delay(1200);
+        d.stop();
+        while(c.receive() != 5) {
+          
+        }
         Serial.println("State 8");
         ledFlash();
         state = 99;
