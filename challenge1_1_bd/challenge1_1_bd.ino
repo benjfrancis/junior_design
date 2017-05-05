@@ -30,6 +30,7 @@ bool mineFound = false;
 // OTHER
 
 const int SWITCH = 46;
+const int SWITCH_BOT = 48;
 
 
 
@@ -90,6 +91,7 @@ void setup() {
   Serial.begin(9600);
 
   pinMode(SWITCH, INPUT);
+  pinMode(SWITCH_BOT, INPUT);
   pinMode(RED_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
   pinMode(YELLOW_LED, OUTPUT);
@@ -133,9 +135,14 @@ void setup() {
  
 // BOT 1 IS RED LINE
 // BOT 2 IS BLUE LINE
-const int BOT = 2;
+int BOT = 1;
  
 void loop() {
+
+if (digitalRead(SWITCH_BOT)) BOT = 1;
+else BOT = 2;
+
+  
 if (BOT == 1) {
 
   
@@ -541,9 +548,9 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
     case 5:
         Serial.println("State 5");
         displayState(state);
-        //while (c.receive() != 4) {
+        while (c.receive() != 4) {
           //Serial.println("Waiting for 500ms from bot 2");
-        //}
+        }
         rb.valid = false;
         state = 6; // 7;
         break;
