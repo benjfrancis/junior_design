@@ -8,7 +8,7 @@ class Comms{
 
 private:
     // Setup constants and variables
-    const byte RX_PIN = A7;
+    const byte RX_PIN = A6;
     const byte TX_PIN = 22;
     const unsigned THRESH_200 = 2300;
     const unsigned THRESH_300 = 3300;

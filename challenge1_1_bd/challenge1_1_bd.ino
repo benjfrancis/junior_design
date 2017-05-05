@@ -84,7 +84,8 @@ Comms c;
 Photo p;
 Drive d;
 
-
+//String BOT_NAME = "DD";
+String BOT_NAME = "PL";
 
 
 void setup() {
@@ -97,6 +98,16 @@ void setup() {
   pinMode(YELLOW_LED, OUTPUT);
   pinMode(BOMB_LED, OUTPUT);
 
+
+  // PINHEAD LARRY
+  if (BOT_NAME = "PL")
+      d.setPower(255, 230, 255, 225);
+
+  // DIRTY DAN
+  else
+      d.setPower(255, 240, 255, 225);
+
+  
   collisionSetup();
   hallSetup();
   //hallArm(true);
@@ -237,7 +248,7 @@ if (BOT == 1) {
           d.stop();
           c.transmitDelay(200);
           d.rightInPlace(0.5);
-          delay(750);
+          delay(650);
           d.stop();
           delay(1000);
           while (c.receive() != 2) {
@@ -267,12 +278,7 @@ if (BOT == 1) {
       
 
       
-      break;
-
-
-      
-        
-        break;
+     break;
 
     case 4:
         Serial.println("State 4");
@@ -301,10 +307,11 @@ if (BOT == 1) {
     case 5:
         Serial.println("State 5");
         displayState(state);
-        while (c.receive() != 4) {
+        while (c.receive() != 5) {
           //Serial.println("Waiting for 500ms from bot 2");
         }
         rb.valid = false;
+        delay(5000);
         state = 6; // 7;
         break;
 
@@ -333,16 +340,28 @@ if (BOT == 1) {
         break;
 
     case 7: 
+        
         Serial.println("State 7");
         d.leftInPlace(0.5);
-        delay(600);
+        delay(800);
         d.forward(0.75);
-        delay(400);
-        d.stop();
-        state = 9;
+        delay(50);
+        rb.valid = false;
+        while (!rb.valid) {
+          rb = p.getRB(rb);
+        }
+        d.leftInPlace(0.5);
+        state = 8;
         
         break;
 
+    case 8:
+        if (!p.isBlack(rb)) {
+          
+          d.stop();
+          state = 9;
+        }
+        rb = p.getRB(rb);
     case 9:
         Serial.println("State 8");
         ledFlash();
@@ -434,12 +453,15 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
     case 1: 
       Serial.println("State 1");
       displayState(state);
+      while(c.receive() != 3) {
+        
+      }
       //////////////////turn yellow LED on
       d.leftInPlace(0.5);
       delay(220);
       d.stop();
       state = 2;
-        break; 
+      break; 
     case 2: 
         Serial.println("State 2");
         
@@ -475,6 +497,9 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
           p.ledOff();
           
           state = 4; //
+          
+          delay(100);
+          bumperState = 0;
       } else if (!mineFound && hallState != 0) { 
           hallState = 0;
           hallArm(false);
@@ -507,15 +532,7 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
           d.rightArch(0.6, 0.75);
           //Serial.println("LEFT");
           rb.valid = false;
-      } 
-      
-
-
-      
-
-      
-      break;
-
+      }
 
       
         
@@ -540,7 +557,7 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
         }
         d.stop();
         delay(500);
-        c.transmitDelay(320);
+        c.transmitDelay(500);
         state = 5; // 6;
         
         break;
@@ -548,9 +565,9 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
     case 5:
         Serial.println("State 5");
         displayState(state);
-        while (c.receive() != 4) {
+        //while (c.receive() != 4) {
           //Serial.println("Waiting for 500ms from bot 2");
-        }
+        //}
         rb.valid = false;
         state = 6; // 7;
         break;
@@ -580,15 +597,27 @@ if (BOT == 2) { // hi ben! you might see this soon but its celia, its 5/4/17 and
         break;
 
     case 7: 
+        
         Serial.println("State 7");
         d.rightInPlace(0.5);
-        delay(600);
+        delay(800);
         d.forward(0.75);
-        delay(400);
-        d.stop();
-        state = 9;
+        delay(50);
+        rb.valid = false;
+        while (!rb.valid) {
+          rb = p.getRB(rb);
+        }
+        d.rightInPlace(0.5);
+        state = 8;
         
         break;
+
+    case 8:
+        if (!p.isBlack(rb)) {
+          d.stop();
+          state = 9;
+        }
+        rb = p.getRB(rb);
 
     case 9:
         Serial.println("State 8");

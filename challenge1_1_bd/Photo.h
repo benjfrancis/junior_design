@@ -18,9 +18,10 @@ private:
     
     const int BLUE_BRIGHT = 255;
     const int RED_BRIGHT = 255;
-    const int INTENSITY_THRESH = 150;
+    const int INTENSITY_THRESH = 140; // ORIGINALLY 150
     const float DELTA_THRESH = 0.15;
-    const int GET_DELAY = 50;
+    const int GET_DELAY = 40;
+    //const int GET_DELAY = 50; THIS IS WHAT IS WAS 5/4 AT 9:20
     //const int GET_DELAY = 250;
     const int SAMPLES = 5;
 

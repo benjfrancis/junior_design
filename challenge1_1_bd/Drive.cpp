@@ -189,3 +189,10 @@ void Drive::stop() {
 
 }
 
+void Drive::setPower(float R_F, float L_F, float R_B, float L_B){
+  R_FWD = R_F;
+  L_FWD = L_F;
+  R_BKD = R_B;
+  L_BKD = L_B;
+}
+
